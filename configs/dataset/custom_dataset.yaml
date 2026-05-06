@@ -1,0 +1,12 @@
+name: custom_dataset
+annotation_path: customhighlightsdata/custom_dataset.json
+video_dir: customhighlightsdata
+split: val
+allowed_extensions: [".mp4", ".mov"]
+
+metrics:
+  recall_at_k: [1, 5]
+  iou_thresholds: [0.3, 0.5]
+  compute_map: false
+  map_iou_thresholds: []
+  compute_miou: true

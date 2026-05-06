@@ -1,0 +1,32 @@
+# Install PyTorch separately for your CUDA version:
+# pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+torch>=2.1.0
+torchvision>=0.16.0
+
+numpy>=1.24
+opencv-python-headless>=4.8.0
+
+# InternVideo2 backbone
+transformers>=4.40.0
+safetensors>=0.4.0
+einops>=0.7.0
+timm>=0.9.0
+
+# Temporal segmentation
+ruptures>=1.1.7
+
+# Evaluation pipeline
+hydra-core>=1.3.0
+omegaconf>=2.3.0
+tqdm>=4.65.0
+
+# Long-video QA (VLM client via OpenRouter)
+openai>=1.10.0
+python-dotenv>=1.0.0
+
+# Dataset loaders
+pandas>=2.0.0
+pyarrow>=14.0.0
+
+# Optional: significantly faster InternVideo2 attention
+# pip install flash-attn --no-build-isolation

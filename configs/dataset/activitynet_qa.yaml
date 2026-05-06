@@ -1,0 +1,7 @@
+name: activitynet_qa
+video_dir: activitynetdata/Anet_videos_15fps_short256
+qa_dir: activitynetdata/activitynet-qa/dataset
+split: val
+
+metrics:
+  type: activitynet_qa_paper

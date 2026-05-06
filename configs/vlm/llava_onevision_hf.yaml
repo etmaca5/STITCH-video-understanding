@@ -1,0 +1,20 @@
+provider: hf_endpoint
+# Fill in after deploying the endpoint on HuggingFace (must end in /v1).
+base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
+# personal: "https://dhc3y1i1o4y337tj.us-east-1.aws.endpoints.huggingface.cloud/v1"
+api_key_env: HF_TOKEN
+# vLLM requires the deployed model ID (TGI would accept any placeholder).
+model: "llava-hf/llava-onevision-qwen2-7b-ov-hf"
+site_url: null
+site_name: null
+# Conservative default for L40S + 7B bf16; smoke-test higher values before raising.
+max_images_per_request: 8
+temperature: 0.0
+max_tokens: 32
+# LLaVA-OV on vLLM uses AnyRes patching: HD frames balloon into ~6k vision tokens each
+# and overflow the 32k context with 8 frames. Downscale longest side to keep budget sane.
+max_image_dim: 480
+# Endpoint scales to zero; first request triggers a cold boot (~2-5 min for 7B).
+# Long timeout + many retries lets the SDK ride out the boot window on request #1.
+timeout: 600.0
+max_retries: 10

@@ -1,0 +1,26 @@
+provider: hf_endpoint
+# LLaVA-OV video-path config. This sends selected frames as a single
+# vLLM `video_url` frame sequence instead of separate image_url entries.
+base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
+# perona lab
+# base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
+# personal
+# base_url: "https://dhc3y1i1o4y337tj.us-east-1.aws.endpoints.huggingface.cloud/v1"
+api_key_env: HF_TOKEN
+model: "llava-hf/llava-onevision-qwen2-7b-ov-hf"
+site_url: null
+site_name: null
+input_mode: video_url
+# This endpoint accepts data:video/jpeg video inputs, but currently returns
+# server errors when request-level media_io_kwargs are included.
+send_video_metadata: false
+# Keep the same 8-frame budget used by the paper baselines and prior runs.
+max_images_per_request: 8
+temperature: 0.0
+# Match WFS-SB lmms-eval generation_kwargs (LVB=32, VideoMME/MLVU=16). Use 32
+# as a single safe upper bound; greedy decoding still emits the option letter
+# first, so this does not change parsed answers.
+max_tokens: 32
+# No max_image_dim here: frames are routed through vLLM's video modality.
+timeout: 600.0
+max_retries: 10

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>STITCH — Other Papers</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; }
+  h1 { color: #1a1a2e; border-bottom: 3px solid #d97706; padding-bottom: 10px; }
+  h2 { color: #16213e; margin-top: 28px; border-left: 4px solid #d97706; padding-left: 10px; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
+  td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: middle; }
+  tr.data-row { cursor: pointer; }
+  tr.data-row:hover td { background: #fff7ed; }
+  tr.data-row.expanded td { background: #ffe4c4; }
+  tr.detail-row { display: none; }
+  tr.detail-row.open { display: table-row; }
+  tr.detail-row td { padding: 0; border-bottom: 2px solid #d97706; }
+  .detail-panel { padding: 16px 20px; background: #fffbf5; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .detail-block.full { grid-column: 1 / -1; }
+  .detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #888; margin-bottom: 3px; }
+  .detail-value { font-size: 13px; color: #222; line-height: 1.5; }
+  .detail-value.highlight { font-size: 14px; font-weight: 600; color: #1a1a2e; background: #fff8c4; border-left: 3px solid #f59e0b; padding: 6px 10px; border-radius: 0 4px 4px 0; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .badge-core { background: #d4edda; color: #155724; }
+  .badge-supporting { background: #cce5ff; color: #004085; }
+  .badge-peripheral { background: #fff3cd; color: #856404; }
+  .expand-icon { float: right; color: #aaa; font-size: 12px; transition: transform 0.2s; }
+  tr.expanded .expand-icon { transform: rotate(180deg); color: #d97706; }
+</style>
+</head>
+<body>
+
+<h1>Other Papers</h1>
+<p style="color:#666">7 papers in the "other" category: foundation models, statistical algorithms, analysis papers. Click any row to expand details.</p>
+
+<div id="container"></div>
+
+<script>
+const OTHERS = [
+  {id:"internvideo2",title:"InternVideo2: Scaling Video Foundation Models for Multimodal Video Understanding",tier:"core",authors:"Wang et al.",venue:"ECCV 2024",type:"Foundation model",
+   relation:"InternVideo2 is STITCH's frozen backbone. All per-clip embeddings are extracted using InternVideo2 and reused across all three task families (GEBD, moment retrieval, VLM frame selection) without any fine-tuning or adaptation.",
+   notes:"Multi-modal video foundation model with strong temporal understanding. STITCH freezes it entirely and applies kernel CPD on top of its temporal embeddings. The frozen backbone is what makes STITCH's training-free claim possible."},
+  {id:"cpd",title:"Selective Review of Offline Change Point Detection Methods (ruptures library)",tier:"core",authors:"Truong et al.",venue:"Signal Processing 2020",type:"Algorithm / library",
+   relation:"The ruptures Python library / kernel-based CPD is the algorithmic core of STITCH's temporal segmentation step. STITCH applies a cosine kernel CPD from this framework to InternVideo2 embeddings to detect semantic change-points.",
+   notes:"Direct citation for STITCH's change-point detection formulation. The cosine kernel choice is the key design decision. ruptures provides the implementation."},
+  {id:"pelt",title:"Optimal Detection of Changepoints with a Linear Computational Cost (PELT)",tier:"core",authors:"Killick et al.",venue:"JASA 2012",type:"Algorithm",
+   relation:"PELT provides O(n) exact change-point search underlying the ruptures library. This is why STITCH's segmentation step scales linearly with video length rather than quadratically.",
+   notes:"The PELT algorithm enables linear-time exact CPD via pruning of the dynamic program. Critical for STITCH's efficiency on long videos."},
+  {id:"clip",title:"Learning Transferable Visual Models From Natural Language Supervision (CLIP)",tier:"supporting",authors:"Radford et al.",venue:"ICML 2021",type:"Foundation model",
+   relation:"CLIP is a foundational vision-language model. Many methods we compare against in Table 2 use CLIP features. InternVideo2 was trained using CLIP-style contrastive objectives. Understanding CLIP helps contextualize the entire zero-shot/training-free landscape.",
+   notes:"Foundational model; its zero-shot cross-modal alignment underpins much of the zero-shot temporal grounding literature. Not directly used in STITCH but deeply relevant to the compared methods."},
+  {id:"uncovering",title:"Uncovering Hidden Challenges in Query-Based Video Moment Retrieval",tier:"supporting",authors:"Otani et al.",venue:"BMVC 2020",type:"Analysis paper",
+   relation:"Reveals annotation biases and trivial solutions in moment retrieval benchmarks (ActivityNet Captions, etc.). Critical for honestly interpreting STITCH's Table 2 numbers — some performance can come from length/position biases rather than genuine temporal understanding.",
+   notes:"Shows that random and length-biased baselines can perform surprisingly well on standard benchmarks. STITCH should be calibrated against these trivial baselines."},
+  {id:"videomae_v2",title:"VideoMAE V2: Scaling Video Masked Autoencoders with Dual Masking",tier:"peripheral",authors:"Wang et al.",venue:"CVPR 2023",type:"Foundation model",
+   relation:"Video masked autoencoder pre-training backbone. Alternative to InternVideo2. Not used in STITCH but provides context for video representation learning backbones.",
+   notes:"MAE-based video pre-training. Peripheral; STITCH uses InternVideo2 which has stronger multi-modal alignment."},
+  {id:"vjepa2",title:"V-JEPA 2: Self-Supervised Video Models Enable Understanding, Prediction and Planning",tier:"peripheral",authors:"Assran et al.",venue:"2025",type:"Foundation model",
+   relation:"JEPA-based self-supervised video model. Alternative to InternVideo2. Not used in STITCH.",
+   notes:"Newest JEPA variant for video. Peripheral; STITCH uses InternVideo2. Could be a future backbone swap."},
+];
+
+function tierBadge(t) {
+  const m = {core:"badge-core",supporting:"badge-supporting",peripheral:"badge-peripheral"};
+  return `<span class="badge ${m[t]||''}">${t}</span>`;
+}
+
+function toggleRow(rowId, detId) {
+  const row = document.getElementById(rowId);
+  const det = document.getElementById(detId);
+  const isOpen = det.classList.contains('open');
+  det.classList.toggle('open', !isOpen);
+  row.classList.toggle('expanded', !isOpen);
+}
+
+function buildSection(title, papers, baseId) {
+  if (!papers.length) return '';
+  let html = `<h2>${title}</h2><table><thead><tr>
+    <th style="width:35%">Title</th><th>Authors</th><th>Venue</th><th>Type</th><th>Tier</th>
+  </tr></thead><tbody>`;
+
+  papers.forEach((p, i) => {
+    const rowId = `${baseId}-r${i}`;
+    const detId = `${baseId}-d${i}`;
+    html += `<tr class="data-row" id="${rowId}" onclick="toggleRow('${rowId}','${detId}')">
+      <td><strong>${p.title}</strong> <span class="expand-icon">▼</span></td>
+      <td>${p.authors}</td><td>${p.venue}</td>
+      <td style="font-size:12px;color:#666">${p.type}</td>
+      <td>${tierBadge(p.tier)}</td>
+    </tr>
+    <tr class="detail-row" id="${detId}">
+      <td colspan="5">
+        <div class="detail-panel">
+          <div class="detail-block full">
+            <div class="detail-label">Role in STITCH</div>
+            <div class="detail-value highlight">${p.relation}</div>
+          </div>
+          <div class="detail-block full">
+            <div class="detail-label">Notes</div>
+            <div class="detail-value">${p.notes}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-label">Type</div>
+            <div class="detail-value">${p.type}</div>
+          </div>
+          <div class="detail-block">
+            <div class="detail-label">Tier</div>
+            <div class="detail-value">${tierBadge(p.tier)}</div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  });
+  return html + '</tbody></table>';
+}
+
+const container = document.getElementById('container');
+container.innerHTML = [
+  buildSection('Core', OTHERS.filter(d=>d.tier==='core'), 'core'),
+  buildSection('Supporting', OTHERS.filter(d=>d.tier==='supporting'), 'sup'),
+  buildSection('Peripheral', OTHERS.filter(d=>d.tier==='peripheral'), 'peri'),
+].join('');
+</script>
+</body>
+</html>

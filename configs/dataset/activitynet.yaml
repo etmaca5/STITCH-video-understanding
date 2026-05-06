@@ -1,0 +1,14 @@
+name: activitynet
+video_dir: activitynetdata/Anet_videos_15fps_short256
+captions_dir: third_party/VideoX/MS-2D-TAN/data/ActivityNet
+split: val
+
+# Standard ActivityNet Captions temporal grounding evaluation protocol:
+#   R@K at IoU=0.3, 0.5, 0.7 for K=1 and K=5
+#   mIoU (mean IoU of the top-1 prediction)
+metrics:
+  recall_at_k: [1, 5]
+  iou_thresholds: [0.3, 0.5, 0.7]
+  compute_map: false
+  map_iou_thresholds: []
+  compute_miou: true

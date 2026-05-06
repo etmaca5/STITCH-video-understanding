@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STITCH Lit Review — Master v2</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 0; padding: 20px; background: #f0f2f5; color: #333; }
+  h1 { color: #1a1a2e; border-bottom: 3px solid #4a90e2; padding-bottom: 10px; margin-bottom: 4px; }
+  .v2-badge { display:inline-block; background:#16a34a; color:white; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700; margin-left:8px; }
+  .tabs { display: flex; gap: 8px; margin: 20px 0 16px; flex-wrap: wrap; }
+  .tab-btn { padding: 8px 16px; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; }
+  .tab-btn.active { background: #4a90e2; color: white; }
+  .tab-btn:not(.active) { background: #e0e0e0; color: #555; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 24px; }
+  th { background: #1a1a2e; color: white; padding: 10px 12px; text-align: left; font-size: 11px; text-transform: uppercase; white-space: nowrap; }
+  td { padding: 9px 12px; border-bottom: 1px solid #eee; font-size: 13px; vertical-align: middle; }
+  tr.data-row { cursor: pointer; }
+  tr.data-row:hover td { background: #eef4ff; }
+  tr.data-row.expanded td { background: #e8f0fe; }
+  tr.detail-row td { padding: 0; border-bottom: 2px solid #4a90e2; }
+  tr.detail-row { display: none; }
+  tr.detail-row.open { display: table-row; }
+  .detail-panel { padding: 16px 20px; background: #f8faff; display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px; }
+  .detail-block.full { grid-column: 1 / -1; }
+  .detail-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #888; margin-bottom: 3px; }
+  .detail-value { font-size: 13px; color: #222; line-height: 1.5; }
+  .detail-value.highlight { font-size: 14px; font-weight: 600; color: #1a1a2e; background: #fff8c4; border-left: 3px solid #f59e0b; padding: 6px 10px; border-radius: 0 4px 4px 0; }
+  .detail-value.evidence { font-size: 13px; background: #ecfdf5; border-left: 3px solid #10b981; padding: 6px 10px; border-radius: 0 4px 4px 0; color: #065f46; }
+  .flags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .flag { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .flag-yes { background: #d4edda; color: #155724; }
+  .flag-no { background: #f8f9fa; color: #aaa; border: 1px solid #ddd; }
+  .flag-na { background: #fff7ed; color: #9a3412; border: 1px dashed #fdba74; font-style:italic; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin: 1px; }
+  .badge-core { background: #d4edda; color: #155724; }
+  .badge-supporting { background: #cce5ff; color: #004085; }
+  .badge-peripheral { background: #fff3cd; color: #856404; }
+  .badge-drop { background: #f8d7da; color: #721c24; }
+  .badge-dataset { background: #e8d5f5; color: #4a0080; }
+  .badge-method { background: #d1ecf1; color: #0c5460; }
+  .badge-other { background: #ffeeba; color: #533f03; }
+  .yes { color: #28a745; font-weight: bold; }
+  .no { color: #bbb; }
+  .na { color: #fb923c; }
+  .stat-bar { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .stat { background: white; border-radius: 8px; padding: 10px 18px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); text-align: center; min-width: 80px; }
+  .stat .num { font-size: 24px; font-weight: 700; color: #4a90e2; }
+  .stat .lbl { font-size: 11px; color: #888; }
+  .section-header td { background: #f0f4ff !important; font-weight: 700; color: #1a1a2e; font-size: 11px; text-transform: uppercase; cursor: default; padding: 6px 12px; }
+  .expand-icon { float: right; color: #aaa; font-size: 12px; transition: transform 0.2s; }
+  tr.expanded .expand-icon { transform: rotate(180deg); color: #4a90e2; }
+  .change-tag { display:inline-block; padding:1px 7px; border-radius:8px; font-size:10px; font-weight:700; }
+  .change-promoted { background:#bbf7d0; color:#14532d; }
+  .change-demoted { background:#fde68a; color:#7c2d12; }
+  .change-corrected { background:#fecaca; color:#7f1d1d; }
+  .rc-badge { display:inline-block; padding:2px 7px; border-radius:4px; font-size:11px; font-weight:600; }
+  .rc-once { background: #ecfdf5; color: #065f46; }
+  .rc-reuse { background: #eff6ff; color: #1e40af; }
+  .rc-rerun { background: #fef2f2; color: #991b1b; }
+  .legend { background:white; padding:8px 14px; border-radius:6px; font-size:12px; color:#555; margin-bottom:16px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+</style>
+</head>
+<body>
+
+<h1>STITCH Lit Review — Master <span class="v2-badge">v2 — audited</span></h1>
+<p style="color:#666; margin-top:4px">Verified against local PDFs. 69 retained · 7 dropped · 1 removed (LongVideoBench — no local PDF). Click any row to expand.</p>
+
+<div class="stat-bar">
+  <div class="stat"><div class="num">19</div><div class="lbl">Core</div></div>
+  <div class="stat"><div class="num">30</div><div class="lbl">Supporting</div></div>
+  <div class="stat"><div class="num">13</div><div class="lbl">Peripheral</div></div>
+  <div class="stat"><div class="num">7</div><div class="lbl">Dropped</div></div>
+  <div class="stat"><div class="num">14</div><div class="lbl">Reclassified</div></div>
+  <div class="stat"><div class="num">5+</div><div class="lbl">Title/author corrections</div></div>
+</div>
+
+<div class="legend">
+  <strong>Legend:</strong> ✓ flag set · ✗ flag unset · <span class="na">○</span> not applicable (e.g., for benchmarks) ·
+  RC: <span class="rc-badge rc-once">once</span> compute_once_reuse,
+  <span class="rc-badge rc-reuse">repr+score</span> reusable_repr_plus_scoring,
+  <span class="rc-badge rc-rerun">rerun</span> rerun_query_specific.
+  Change tags: <span class="change-tag change-promoted">promoted</span> <span class="change-tag change-demoted">demoted</span> <span class="change-tag change-corrected">metadata corrected</span>.
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('all', this)">All Retained (62)</button>
+  <button class="tab-btn" onclick="showTab('core', this)">Core (19)</button>
+  <button class="tab-btn" onclick="showTab('supporting', this)">Supporting (30)</button>
+  <button class="tab-btn" onclick="showTab('peripheral', this)">Peripheral (13)</button>
+  <button class="tab-btn" onclick="showTab('changes', this)">v1→v2 changes</button>
+</div>
+
+<div id="tab-all" class="tab-content active"><div id="table-all"></div></div>
+<div id="tab-core" class="tab-content"><div id="table-core"></div></div>
+<div id="tab-supporting" class="tab-content"><div id="table-supporting"></div></div>
+<div id="tab-peripheral" class="tab-content"><div id="table-peripheral"></div></div>
+<div id="tab-changes" class="tab-content"><div id="table-changes"></div></div>
+
+<script>
+// Subset of fields needed for the v2 view, mirroring papers_master_v2.json
+const PAPERS = [
+  // CORE
+  {id:"qvhighlights", t:"QVHighlights + Moment-DETR", a:"Lei, Berg, Bansal", y:2021, v:"NeurIPS 2021", r:"core", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:null,rc:null,
+   rel:"Primary STITCH Table 2 moment retrieval evaluation benchmark. Moment-DETR baseline introduced here.", notes:"UNC. 10K+ YouTube videos.", change:null},
+  {id:"kinetics_gebd", t:"Generic Event Boundary Detection: A Benchmark for Event Segmentation", a:"Shou, Lei, Wang, Ghadiyaram, Feiszli", y:2021, v:"ICCV 2021", r:"core", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"no-query",tu:"frame",lv:false,gmt:null,rc:null,
+   rel:"Defines GEBD task and Kinetics-GEBD benchmark used in STITCH Table 1.", notes:"FAIR + NUS. Title corrected from v1.", change:"corrected"},
+  {id:"activitynet_captions", t:"Dense-Captioning Events in Videos (ActivityNet Captions)", a:"Krishna, Hata, Ren, Fei-Fei, Niebles", y:2017, v:"ICCV 2017", r:"core", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:null,rc:null,
+   rel:"Source paper for ActivityNet Captions — STITCH Table 2 moment retrieval dataset.", notes:"Stanford.", change:"promoted"},
+  {id:"videomme", t:"Video-MME", a:"Fu et al.", y:2024, v:"CVPR 2025 (likely)", r:"core", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"frame",lv:true,gmt:true,rc:null,
+   rel:"STITCH Table 3 long-video VLM reasoning benchmark.", notes:"arXiv 2405.21075. Multi-institution.", change:null},
+  {id:"mlvu", t:"MLVU: Benchmarking Multi-task Long Video Understanding", a:"Zhou, Shu, Zhao, Wu, Liang, Xiao, et al.", y:2024, v:"arXiv 2024 (BAAI)", r:"core", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"frame",lv:true,gmt:true,rc:null,
+   rel:"STITCH Table 3 long-video VLM benchmark.", notes:"v1 had wrong title; corrected.", change:"corrected"},
+  {id:"internvideo2", t:"InternVideo2: Scaling Foundation Models for Multimodal Video Understanding", a:"Y. Wang et al. (OpenGVLab)", y:2024, v:"ECCV 2024 (unverified)", r:"core", c:"other", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"window/clip",lv:true,gmt:true,rc:"compute_once_reuse",
+   rel:"STITCH's frozen backbone — per-clip embeddings reused across all three task families.", notes:"Multi-modal video foundation model.", change:null,
+   evidence:"pretrained_backbone & supervised both true: InternVideo2 itself is trained at scale with multi-modal contrastive + masked objectives."},
+  {id:"pelt", t:"Optimal Detection of Changepoints with a Linear Computational Cost (PELT)", a:"Killick, Fearnhead, Eckley", y:2012, v:"JASA 2012", r:"core", c:"other", tf:true,zs:null,un:true,sup:false,qa:"no-query",tu:"adaptive chunk",lv:false,gmt:null,rc:"compute_once_reuse",
+   rel:"O(n) change-point search algorithm; STITCH's segmentation efficiency relies on it.", notes:"Lancaster U.", change:null,
+   evidence:"training_free=true and unsupervised=true because PELT is parameter-free with no learned weights."},
+  {id:"kts_revisited", t:"Revisiting Kernel Temporal Segmentation as Adaptive Tokenizer", a:"Afham, Shukla, Poursaeed, Zhang, Shah, Lim", y:2023, v:"Meta AI preprint", r:"core", c:"method", tf:true,zs:true,un:true,sup:false,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:true,rc:"compute_once_reuse",
+   rel:"Most architecturally similar prior work to STITCH — task-agnostic, unsupervised, KTS-based adaptive tokenizer over frozen features.", notes:"Meta AI.", change:null,
+   evidence:"training_free, unsupervised, zero_shot all confirmed in abstract: 'task-agnostic, unsupervised and scalable approach based on Kernel Temporal Segmentation'."},
+  {id:"diffgebd", t:"Generic Event Boundary Detection via Denoising Diffusion (DiffGEBD)", a:"Hwang, Gong, Kim, Cho", y:2024, v:"ECCV 2024 (likely)", r:"core", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"frame",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Supervised GEBD competitor in STITCH Table 1; uses temporal self-similarity + diffusion.", notes:"POSTECH + GenGenAI.", change:null},
+  {id:"gebd_efficient", t:"Rethinking Architecture Design for Efficient GEBD", a:"Zheng, Zhang, Wang, Song, Huang, Yang", y:null, v:"ACM MM (likely)", r:"core", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"frame",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Supervised GEBD competitor; emphasizes inference efficiency.", notes:"Xi'an Jiaotong + Tsinghua.", change:null},
+  {id:"on_gebd", t:"Online Generic Event Boundary Detection (On-GEBD)", a:"Jung, Kim, Lim, Son, Choi", y:null, v:"unverified", r:"core", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"frame",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Streaming/online GEBD competitor (no future frame access).", notes:"GIST + SNU + POSTECH.", change:null,
+   evidence:"long_video_framing=true: defined for streaming/long-form videos without buffering."},
+  {id:"tfvtg", t:"Training-free Video Temporal Grounding (TFVTG)", a:"Zheng, Cai, Chen, Peng, Liu", y:2024, v:"ECCV 2024 (likely)", r:"core", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Canonical training-free VTG baseline. Direct Table 2 comparison.", notes:"Peking U.", change:null,
+   evidence:"training_free=true, zero_shot=true confirmed: paper title and abstract emphasize frozen pre-trained models with no task-specific training."},
+  {id:"moment_gpt", t:"Zero-shot VMR via Off-the-shelf MLLMs (Moment-GPT)", a:"Xu, Sun, Zhai, Li, Liang, Li, Du", y:2024, v:"unverified", r:"core", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Tuning-free zero-shot moment retrieval baseline using LLaMA-3 + frozen MLLMs.", notes:"Nanjing U.", change:null,
+   evidence:"training_free=true confirmed by 'tuning-free pipeline' in abstract."},
+  {id:"zs_frozen_vlm", t:"Zero-Shot Video Moment Retrieval from Frozen VLMs", a:"Luo, Huang, Gong, Jin, Liu", y:null, v:"WACV (likely)", r:"core", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Foundational zero-shot frozen-VLM moment retrieval baseline.", notes:"QMUL + Adobe + Peking U.", change:null,
+   evidence:"training_free=true, zero_shot=true confirmed in title and use of frozen VLMs."},
+  {id:"tag", t:"TAG: Simple Yet Effective Temporal-Aware Approach for Zero-Shot VTG", a:"J.-S. Lee, S. Lee, Ahn, Choi, J.-H. Lee", y:null, v:"unverified", r:"core", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"adaptive chunk",lv:false,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Methodologically the closest training-free MR method to STITCH — uses temporal coherence clustering against semantic fragmentation.", notes:"Sungkyunkwan U. v1 mistitled as audio-visual.", change:"promoted",
+   evidence:"Promoted to core: paper actually does 'temporal pooling, temporal coherence clustering, similarity adjustment' — temporal coherence clustering is essentially CPD-style segmentation."},
+  {id:"point_to_span", t:"Point to Span: Zero-Shot MR for Hour-Long Videos", a:"Jeon et al.", y:2024, v:"unverified", r:"core", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Zero-shot Long Video MR (ZLVMR), search-then-refine in hour-long videos.", notes:"Chung-Ang U + KAIST + ETRI.", change:"promoted",
+   evidence:"long_video_framing=true: paper explicitly targets 'unseen hour-long videos'."},
+  {id:"wfs_sb", t:"Wavelet-based Frame Selection by Detecting Semantic Boundary (WFS-SB)", a:"W. Chen et al.", y:null, v:"unverified", r:"core", c:"method", tf:true,zs:false,un:true,sup:false,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Closest published method to STITCH App 3 — training-free, query-agnostic semantic-boundary frame selection for LVLMs.", notes:"Xiamen U.", change:"promoted",
+   evidence:"Promoted: abstract describes 'training-free framework' that 'captures semantic shifts—pivotal moments of narrative change' for long-video LVLMs."},
+  {id:"videotree", t:"VideoTree: Adaptive Tree-based Video Representation for LLM Reasoning", a:"Wang, Yu, Stengel-Eskin, Yoon, Cheng, Bertasius, Bansal", y:2024, v:"unverified", r:"core", c:"method", tf:true,zs:false,un:false,sup:false,qa:"query-dependent",tu:"hierarchical/multi-scale",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Training-free hierarchical long-video LLM reasoning. Closest training-free competitor for App 3.", notes:"UNC.", change:"promoted",
+   evidence:"training_free=true confirmed in abstract ('VideoTree, a training-free framework'). RC=rerun_query_specific because tree is built per query."},
+  {id:"moment_sampling_vlm", t:"Moment Sampling in Video LLMs for Long-Form Video QA", a:"Chasmai, Jagatap, Gouthaman KV, Van Horn, Maji, Fanelli", y:2025, v:"arXiv 2025", r:"core", c:"method", tf:true,zs:false,un:false,sup:false,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Training-free, query-agnostic moment sampling for Video LLMs on long-form QA. Direct App 3 competitor.", notes:"UMass + Dolby. arXiv 2507.00033.", change:"promoted"},
+  {id:"timeloc", t:"TimeLoc: Unified End-to-End Framework for Precise Timestamp Localization", a:"Zhang, Sui, Liu, Mu, Wang, Ghanem", y:2025, v:"unverified", r:"core", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-potential",tu:"proposal/segment",lv:true,gmt:true,rc:"rerun_query_specific",
+   rel:"Closest published multi-task temporal localization analog: explicitly unifies TAL + temporal video grounding + moment retrieval + GEBD (supervised).", notes:"Moonshot AI + KAUST + NVIDIA + 4Paradigm.", change:"promoted",
+   evidence:"general_multi_task_framing=true: abstract explicitly lists TAL, temporal video grounding, moment retrieval, and GEBD as covered subtasks."},
+
+  // SUPPORTING
+  {id:"qd_detr", t:"Query-Dependent Video Representation for MR + HD (QD-DETR)", a:"Moon, Hyun, Park, Park, Heo", y:2023, v:"CVPR 2023", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Strong supervised baseline on QVHighlights.", notes:"Sungkyunkwan + Pyler.", change:null},
+  {id:"univtg", t:"UniVTG: Unified Video-Language Temporal Grounding", a:"Lin, Zhang, Chen, Pramanick, Gao, Wang, Yan, Shou", y:2023, v:"ICCV 2023", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:true,rc:"rerun_query_specific",
+   rel:"Unified VTG pretraining; closest supervised analog to STITCH's MR side.", notes:"NUS + Meta AI + JHU.", change:null},
+  {id:"unloc", t:"UnLoc: Unified Framework for Video Localization Tasks", a:"Yan, Xiong, Nagrani, Arnab, Wang, Ge, Ross, Schmid", y:2023, v:"ICCV 2023", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-potential",tu:"proposal/segment",lv:false,gmt:true,rc:"rerun_query_specific",
+   rel:"Unified localization (MR + highlight + TAL); multi-task framing aligns with STITCH but supervised.", notes:"Google Research.", change:null},
+  {id:"snag", t:"SnAG: Scalable and Accurate Video Grounding", a:"Mu, Mo, Li", y:2024, v:"CVPR 2024", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Late-fusion supervised grounding; reusable video-side representation.", notes:"UW-Madison.", change:null,
+   evidence:"RC=reusable_repr_plus_scoring (not rerun_query_specific) because abstract favors late fusion as 'more cost-effective' for many queries."},
+  {id:"bam_detr", t:"BAM-DETR: Boundary-Aligned Moment Detection Transformer", a:"Lee, Byun", y:2024, v:"ECCV 2024 (likely)", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Boundary-aligned DETR for moment detection. Table 2 supervised competitor.", notes:"Inha + Yonsei.", change:null},
+  {id:"simbase", t:"SimBase: Simple Baseline for Temporal Video Grounding", a:"Bao, Kot", y:null, v:"Tech report (NTU)", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Simple supervised baseline. Useful calibration.", notes:"NTU; same first author as Vid-Morp.", change:null},
+  {id:"vid_morp", t:"Vid-Morp: VMR Pretraining from Unlabeled Videos in the Wild", a:"Bao, Kong, Shao, Ng, Er, Kot", y:null, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:true,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Unsupervised VMR pretraining via the ReCorrect algorithm.", notes:"NTU.", change:null,
+   evidence:"unsupervised=true: pretraining uses pseudo-annotations from unlabeled wild videos with no human-curated moment labels."},
+  {id:"qvm2_flashmmr", t:"When One Moment Isn't Enough: Multi-Moment Retrieval (QV-M2 + FlashMMR)", a:"Cao, Du, Zhang, Yu, Li, Wang", y:2024, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"hierarchical/multi-scale",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"QV-M2 dataset + FlashMMR method; multi-moment extension of QVHighlights.", notes:"U Queensland.", change:null},
+  {id:"towards_balanced", t:"Towards Balanced Alignment: Modal-Enhanced Semantic Modeling for VMR", a:"Liu, Li, Xie, Li, Ge, Liu, Jin", y:null, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Modal-enhanced semantic modeling for VMR; supervised competitor.", notes:"USTC + People's Daily.", change:null},
+  {id:"chatvtg", t:"ChatVTG: VTG via Chat with Video Dialogue LLMs", a:"Qu, Chen, Liu, Li, Zhao", y:null, v:"unverified", r:"supporting", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Zero-shot VTG via Video Dialogue LLMs generating multi-granularity segments.", notes:"BJTU + USTC.", change:"promoted"},
+  {id:"measure_twice", t:"Measure Twice, Cut Once: Semantic-Oriented Temporal Localization", a:"Pang, Otani, Nakashima", y:2026, v:"ICLR 2026", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Semantic-oriented temporal localization with video LLMs; argues against direct timestamp generation.", notes:"U Osaka + CyberAgent.", change:null},
+  {id:"moviechat", t:"MovieChat: Dense Token to Sparse Memory for Long Video", a:"Song, Chai, G. Wang, Y. Zhang et al.", y:2024, v:"CVPR 2024", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Long-video understanding via sliding window + cosine-similarity token merging. Methodologically related (cosine similarity).", notes:"Zhejiang U + UW + MSRA.", change:null},
+  {id:"longvu", t:"LongVU: Spatiotemporal Adaptive Compression", a:"X. Shen, Xiong, C. Zhao et al.", y:2024, v:"NeurIPS 2024 (likely)", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-potential",tu:"adaptive chunk",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Supervised spatiotemporal compression for long-video VLMs. Trained alternative to STITCH App 3.", notes:"Meta AI + KAUST.", change:null},
+  {id:"storm", t:"STORM: Spatiotemporal TOken Reduction for MLLMs", a:"Jiang, X. Li, Z. Liu, M. Li, Chen et al. (NVIDIA)", y:2025, v:"arXiv 2025", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Token-efficient long-video MLLM with Mamba SSM temporal encoder.", notes:"NVIDIA. v1 caveat about RL-paper confusion now resolved — confirmed video-MLLM paper.", change:"corrected"},
+  {id:"adaretake", t:"AdaReTaKe: Adaptive Redundancy Reduction", a:"X. Wang, Si, J. Wu, Zhu, Cao, Nie", y:2025, v:"arXiv 2025", r:"supporting", c:"method", tf:true,zs:false,un:false,sup:false,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Training-free adaptive token-level redundancy reduction for long-video VLMs.", notes:"HIT Shenzhen + Huawei. arXiv 2503.12559.", change:null,
+   evidence:"training_free=true confirmed in abstract."},
+  {id:"chapter_llama", t:"Chapter-Llama: Hour-Long Video Chaptering with LLMs", a:"Ventura, Yang, Schmid, Varol", y:2024, v:"CVPR 2025 (likely)", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"adaptive chunk",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Hour-long video chaptering via LLMs in text domain.", notes:"ENPC + Inria + Google DeepMind.", change:null},
+  {id:"videoinsta", t:"VideoINSTA: Zero-shot Long Video Understanding via LLMs", a:"Liao, Erler, Wang, Zhai, Zhang, Ma, Tresp", y:2024, v:"EMNLP 2024 Findings (likely)", r:"supporting", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Zero-shot LLM-based long-video reasoning.", notes:"LMU Munich.", change:null},
+  {id:"prompts_to_summaries", t:"Prompts to Summaries: ZS Language-Guided Video Summarization", a:"Barbara, Maalouf", y:null, v:"unverified", r:"supporting", c:"method", tf:true,zs:true,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:false,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Zero-shot language-guided video summarization.", notes:"U Haifa.", change:null},
+  {id:"self_chained_sevila", t:"Self-Chained Image-Language Model (SeViLA)", a:"Yu, Cho, Yadav, Bansal", y:2023, v:"NeurIPS 2023", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"frame",lv:false,gmt:true,rc:"rerun_query_specific",
+   rel:"Multi-task localizer + QA from frozen image-language backbone.", notes:"UNC (Bansal lab).", change:null},
+  {id:"boundary_ssl", t:"Boundary-Aware SSL for Video Scene Segmentation", a:"Mun, Shin, Han, Lee, Ha, Lee, Kim", y:2022, v:"ICLR 2022 (likely)", r:"supporting", c:"method", tf:false,zs:false,un:true,sup:false,qa:"no-query",tu:"frame",lv:false,gmt:false,rc:"compute_once_reuse",
+   rel:"SSL for boundary-aware video scene segmentation. Conceptually adjacent to GEBD.", notes:"Kakao Brain + SNU + Hanyang.", change:null,
+   evidence:"unsupervised=true: explicitly uses self-supervised pretext tasks with no ground-truth annotations."},
+  {id:"tridet", t:"TriDet: Temporal Action Detection with Relative Boundary Modeling", a:"Shi, Zhong, Cao, Ma, Li, Tao", y:2023, v:"CVPR 2023", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Supervised temporal action detection with explicit boundary modeling.", notes:"Beihang + Meituan + JD.", change:null},
+  {id:"shot_relating_masrc", t:"Modality-Aware Shot Relating and Comparing for Video Scene Detection (MASRC)", a:"Tan, Wang, Dang, Li, Ou", y:null, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Supervised video scene detection (boundary detection between scenes via shot-relating). Adjacent to GEBD.", notes:"v1 mislabeled as Video QA. Chongqing U + XJTLU.", change:"corrected"},
+  {id:"tempura", t:"TEMPURA: Temporal Event Masked Prediction and Understanding for Reasoning in Action", a:"Cheng, V. Wang, H. Wang, Zhou et al.", y:2025, v:"arXiv 2025", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"no-query",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Trained model that segments untrimmed video into events with dense descriptions and masked-event reasoning.", notes:"v1 mistitled as 'Object-level Semantic Context for TSG'. UW + CMU + NYCU + Microsoft. arXiv 2505.01583.", change:"corrected"},
+  {id:"two_d_tan", t:"Learning 2D Temporal Adjacent Networks (2D-TAN)", a:"S. Zhang, Peng, Fu, Luo", y:2020, v:"AAAI 2020", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Classic 2D temporal map MR baseline. Important historical reference.", notes:"Rochester + MSR.", change:null},
+  {id:"tall", t:"TALL: Temporal Activity Localization via Language Query", a:"Gao, Sun, Yang, Nevatia", y:2017, v:"ICCV 2017", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Foundational moment retrieval paper.", notes:"USC + Google.", change:null},
+  {id:"lvc", t:"LVC: Lightweight Compression for VLMs in Long Video", a:"Z. Wang, H. Wu, Rong, Jiang, Y. Zhang et al.", y:null, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Lightweight VLM compression for long video.", notes:"CASIA + UCAS.", change:null},
+  {id:"lvlr", t:"Long Video Understanding with Learnable Retrieval", a:"Xu, Lan, Xie, Chen, Lu", y:null, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Long-video LVLM with learned retrieval.", notes:"Likely Microsoft + USTC.", change:null},
+  {id:"adavideorag", t:"AdaVideoRAG: Omni-Contextual Adaptive RAG for Long Video", a:"unverified", y:2024, v:"unverified", r:"supporting", c:"method", tf:false,zs:false,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Adaptive RAG for long video understanding.", notes:"Authors not yet verified from PDF; full title corrected in v2.", change:"corrected"},
+  {id:"cpd_song_chen", t:"Practical and Powerful Kernel-Based Change-Point Detection", a:"H. Song, H. Chen", y:null, v:"IEEE Trans. (preprint)", r:"supporting", c:"other", tf:true,zs:null,un:true,sup:false,qa:"no-query",tu:"adaptive chunk",lv:false,gmt:null,rc:"compute_once_reuse",
+   rel:"Kernel-based CPD methodology. v1 conflated this with the ruptures library (Truong et al.) — different paper.", notes:"⚠️ v1 misattributed. Verify which CPD paper STITCH actually cites.", change:"demoted",
+   evidence:"Demoted from core to supporting until it is verified that STITCH actually cites this paper rather than Truong et al. (ruptures)."},
+  {id:"clip", t:"Learning Transferable Visual Models (CLIP)", a:"Radford et al. (OpenAI)", y:2021, v:"ICML 2021", r:"supporting", c:"other", tf:false,zs:true,un:false,sup:true,qa:"query-dependent",tu:"frame",lv:false,gmt:true,rc:"compute_once_reuse",
+   rel:"Foundational VLM underpinning many compared methods.", notes:"OpenAI.", change:null},
+  {id:"uncovering_hidden", t:"Uncovering Hidden Challenges in Query-Based VMR", a:"Otani, Nakashima, Rahtu, Heikkilä", y:2020, v:"BMVC 2020", r:"supporting", c:"other", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:null,lv:false,gmt:null,rc:null,
+   rel:"Analysis of trivial baselines and annotation biases on ActivityNet Captions / Charades-STA.", notes:"CyberAgent + Osaka + Tampere + Oulu.", change:null},
+  {id:"egoschema", t:"EgoSchema: Diagnostic Benchmark for Very Long-form Video QA", a:"Mangalam, Akshkulakov, Malik", y:2023, v:"NeurIPS 2023", r:"supporting", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"frame",lv:true,gmt:null,rc:null,
+   rel:"Long-form egocentric VQA benchmark; context for STITCH Table 3.", notes:"UC Berkeley.", change:null},
+  {id:"mad", t:"MAD: Scalable Dataset for Language Grounding from Movie Audio Descriptions", a:"Soldan, Pardo, Alcázar, Caba Heilbron, Zhao, Giancola, Ghanem", y:2022, v:"CVPR 2022", r:"supporting", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:null,rc:null,
+   rel:"Movie-scale language grounding dataset; adjacent to long-video MR.", notes:"KAUST + Adobe.", change:null},
+  {id:"momentseeker", t:"MomentSeeker: Task-Oriented Benchmark for Long-Video MR", a:"Yuan, Ni, Liu, Wang, Zhou, Liang, Zhao, Cao, Dou, Wen", y:null, v:"unverified", r:"supporting", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:null,rc:null,
+   rel:"Long-video MR benchmark.", notes:"RUC + BAAI.", change:null},
+  {id:"lovr", t:"LoVR: Long Video Retrieval Benchmark", a:"Cai, Liang, Han, Dong, Qiang, An, Xu, Cui, Zhang", y:null, v:"unverified", r:"supporting", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:null,rc:null,
+   rel:"Long video retrieval benchmark.", notes:"ECNU + PKU + HUST + Beihang + OceanBase.", change:null},
+
+  // PERIPHERAL
+  {id:"moment_alignment_matr", t:"Aligning Moments in Time using Video Queries (MATR)", a:"Kumar, Agarwal, Gupta, Mishra", y:null, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Vid2VidMR (video-to-video moment retrieval) — different task setup from STITCH Table 2.", notes:"v1 listed as text-query MR; actually uses VIDEO queries. IIT Jodhpur + Microsoft.", change:"demoted",
+   evidence:"Demoted: abstract explicitly defines task as 'video-to-video moment retrieval (Vid2VidMR)' — outside STITCH's Table 2 task formulation."},
+  {id:"scdm", t:"Semantic Conditioned Dynamic Modulation (SCDM)", a:"Yuan, Ma, J. Wang, W. Liu, W. Zhu", y:2019, v:"NeurIPS 2019", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"proposal/segment",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Pre-DETR-era TSG method; superseded by newer baselines.", notes:"Tsinghua + Tencent.", change:"demoted"},
+  {id:"lgvi", t:"Local-Global Video-Text Interactions for Temporal Grounding (LGI)", a:"Mun, Cho, Han", y:2020, v:"CVPR 2020", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:false,gmt:false,rc:"rerun_query_specific",
+   rel:"Pre-DETR TSG baseline.", notes:"POSTECH + SNU.", change:"demoted"},
+  {id:"nextqa", t:"NExT-QA: Causal/Temporal Video QA", a:"Xiao, Shang, Yao, Chua", y:2021, v:"CVPR 2021", r:"peripheral", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"frame",lv:false,gmt:null,rc:null,
+   rel:"Causal/temporal VQA benchmark; not directly used in STITCH evaluation.", notes:"NUS.", change:"demoted"},
+  {id:"ego4d", t:"Ego4D: 3,000 Hours of Egocentric Video", a:"Grauman et al.", y:2022, v:"CVPR 2022", r:"peripheral", c:"dataset_benchmark", tf:null,zs:null,un:null,sup:null,qa:"query-dependent",tu:"proposal/segment",lv:true,gmt:null,rc:null,
+   rel:"Underlies EgoSchema.", notes:"", change:null},
+  {id:"videomae_v2", t:"VideoMAE V2", a:"Wang et al.", y:2023, v:"CVPR 2023", r:"peripheral", c:"other", tf:false,zs:false,un:true,sup:false,qa:"no-query",tu:"window/clip",lv:false,gmt:null,rc:"compute_once_reuse",
+   rel:"Alternative video backbone.", notes:"", change:null},
+  {id:"vjepa2", t:"V-JEPA 2", a:"Assran et al.", y:2025, v:"arXiv 2025", r:"peripheral", c:"other", tf:false,zs:false,un:true,sup:false,qa:"no-query",tu:"window/clip",lv:false,gmt:null,rc:"compute_once_reuse",
+   rel:"Alternative SSL video backbone.", notes:"", change:null},
+  {id:"deep_video_discovery", t:"Deep Video Discovery: Agentic Search for Long-form Video", a:"unverified", y:2024, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Agentic search-based long-video understanding.", notes:"Authors not verified.", change:null},
+  {id:"drvideo", t:"DrVideo: Document Retrieval for Long Video", a:"unverified", y:2024, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Document RAG paradigm for long video.", notes:"", change:null},
+  {id:"hierarchical_long", t:"Hierarchical Long Video w/ Audiovisual Entity Cohesion + Agentic Search", a:"unverified", y:2024, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:false,qa:"query-dependent",tu:"hierarchical/multi-scale",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Agentic + hierarchical paradigm.", notes:"", change:null},
+  {id:"video_rag", t:"Video-RAG: Visually-Aligned RAG for Long Video", a:"unverified", y:2024, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:false,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"reusable_repr_plus_scoring",
+   rel:"Visual RAG for long video.", notes:"", change:null},
+  {id:"video_xl", t:"Video-XL: Extra-Long VLM for Hour-Scale Video", a:"unverified", y:2024, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"compute_once_reuse",
+   rel:"Trained extra-long VLM.", notes:"", change:null},
+  {id:"your_interest", t:"Your Interest, Your Summaries: Query-Focused Long Video Summarization", a:"unverified", y:null, v:"unverified", r:"peripheral", c:"method", tf:false,zs:false,un:false,sup:true,qa:"query-dependent",tu:"window/clip",lv:true,gmt:false,rc:"rerun_query_specific",
+   rel:"Query-focused long-video summarization.", notes:"", change:null},
+];
+
+function flagCell(v) {
+  if (v === null || v === undefined) return '<span class="na">○</span>';
+  return v ? '<span class="yes">✓</span>' : '<span class="no">✗</span>';
+}
+
+function rcBadge(rc) {
+  if (!rc) return '<span style="color:#aaa;font-size:11px">—</span>';
+  const m = {compute_once_reuse:["rc-once","once"], reusable_repr_plus_scoring:["rc-reuse","repr+score"], rerun_query_specific:["rc-rerun","rerun"]};
+  const [c,l] = m[rc]||["",""];
+  return `<span class="rc-badge ${c}">${l}</span>`;
+}
+
+function tierBadge(r) {
+  return `<span class="badge badge-${r}">${r}</span>`;
+}
+
+function catBadge(c) {
+  const map = {dataset_benchmark:["badge-dataset","dataset"], method:["badge-method","method"], other:["badge-other","other"]};
+  const [cls,lbl] = map[c]||["",c];
+  return `<span class="badge ${cls}">${lbl}</span>`;
+}
+
+function changeBadge(ch) {
+  if (!ch) return '';
+  const m = {promoted:"change-promoted", demoted:"change-demoted", corrected:"change-corrected"};
+  return ` <span class="change-tag ${m[ch]||''}">${ch}</span>`;
+}
+
+function qaShort(qa) {
+  return {"query-dependent":"QD","no-query":"NQ","query-potential":"QP"}[qa] || qa || "—";
+}
+
+function detailPanel(p) {
+  const flagItems = [
+    [p.tf, 'training-free', p.tf===null],
+    [p.zs, 'zero-shot', p.zs===null],
+    [p.un, 'unsupervised', p.un===null],
+    [p.sup, 'supervised', p.sup===null],
+    [p.lv, 'long video', p.lv===null],
+    [p.gmt, 'multi-task framing', p.gmt===null],
+  ].map(([v,l,na]) => {
+    const cls = na ? 'flag-na' : (v ? 'flag-yes' : 'flag-no');
+    const sym = na ? '○' : (v ? '✓' : '✗');
+    return `<span class="flag ${cls}">${sym} ${l}</span>`;
+  }).join('');
+
+  const evidenceBlock = p.evidence ? `
+    <div class="detail-block full">
+      <div class="detail-label">Evidence basis</div>
+      <div class="detail-value evidence">${p.evidence}</div>
+    </div>` : '';
+
+  const changeBlock = p.change ? `
+    <div class="detail-block">
+      <div class="detail-label">v1→v2 change</div>
+      <div class="detail-value">${changeBadge(p.change)}</div>
+    </div>` : '';
+
+  return `<div class="detail-panel">
+    <div class="detail-block full">
+      <div class="detail-label">Relation to STITCH</div>
+      <div class="detail-value highlight">${p.rel}</div>
+    </div>
+    <div class="detail-block full">
+      <div class="detail-label">Notes</div>
+      <div class="detail-value">${p.notes||'—'}</div>
+    </div>
+    ${evidenceBlock}
+    <div class="detail-block">
+      <div class="detail-label">Properties</div>
+      <div class="flags">${flagItems}</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Reusable compute</div>
+      <div class="detail-value">${rcBadge(p.rc)}</div>
+    </div>
+    <div class="detail-block">
+      <div class="detail-label">Query awareness · Temporal unit</div>
+      <div class="detail-value">${qaShort(p.qa)} · ${p.tu||'—'}</div>
+    </div>
+    ${changeBlock}
+    <div class="detail-block">
+      <div class="detail-label">Year · Venue</div>
+      <div class="detail-value">${p.y||'unverified'} · ${p.v||'unverified'}</div>
+    </div>
+  </div>`;
+}
+
+function buildTable(papers, containerId, withTier) {
+  const el = document.getElementById(containerId);
+  let html = `<table><thead><tr>
+    <th style="width:30%">Title</th>
+    <th>Authors</th>
+    <th>Yr</th>
+    ${withTier ? '<th>Tier</th>' : ''}
+    <th>Cat</th>
+    <th>TF</th><th>ZS</th><th>UN</th>
+    <th>QA</th><th>TU</th><th>LV</th><th>RC</th>
+    <th>Δ</th>
+  </tr></thead><tbody>`;
+
+  let lastTier = null;
+  papers.forEach((p,i) => {
+    if (withTier && p.r !== lastTier) {
+      const labels = {core:'— CORE —',supporting:'— SUPPORTING —',peripheral:'— PERIPHERAL —'};
+      html += `<tr class="section-header"><td colspan="13">${labels[p.r]||p.r}</td></tr>`;
+      lastTier = p.r;
+    }
+    const rid = `r-${containerId}-${i}`;
+    const did = `d-${containerId}-${i}`;
+    html += `<tr class="data-row" id="${rid}" onclick="toggleRow('${rid}','${did}')">
+      <td><strong>${p.t}</strong> <span class="expand-icon">▼</span></td>
+      <td style="font-size:12px">${p.a}</td>
+      <td>${p.y||'—'}</td>
+      ${withTier ? `<td>${tierBadge(p.r)}</td>` : ''}
+      <td>${catBadge(p.c)}</td>
+      <td>${flagCell(p.tf)}</td>
+      <td>${flagCell(p.zs)}</td>
+      <td>${flagCell(p.un)}</td>
+      <td style="font-size:11px;white-space:nowrap">${qaShort(p.qa)}</td>
+      <td style="font-size:11px;white-space:nowrap">${p.tu||'—'}</td>
+      <td>${flagCell(p.lv)}</td>
+      <td>${rcBadge(p.rc)}</td>
+      <td>${p.change?changeBadge(p.change):''}</td>
+    </tr>
+    <tr class="detail-row" id="${did}">
+      <td colspan="13">${detailPanel(p)}</td>
+    </tr>`;
+  });
+  el.innerHTML = html + '</tbody></table>';
+}
+
+function buildChangesTable() {
+  const changed = PAPERS.filter(p => p.change);
+  let html = `<p>${changed.length} entries marked as changed in v2 (relevance moves, metadata corrections).</p>
+  <table><thead><tr><th>Title</th><th>Change type</th><th>Reason</th></tr></thead><tbody>`;
+  changed.forEach((p,i) => {
+    const rid = `c-${i}`;
+    const did = `cd-${i}`;
+    html += `<tr class="data-row" id="${rid}" onclick="toggleRow('${rid}','${did}')">
+      <td><strong>${p.t}</strong> <span class="expand-icon">▼</span></td>
+      <td>${changeBadge(p.change)}</td>
+      <td style="font-size:12px;color:#555">${p.notes||p.rel.substring(0,140)}</td>
+    </tr>
+    <tr class="detail-row" id="${did}">
+      <td colspan="3">${detailPanel(p)}</td>
+    </tr>`;
+  });
+  document.getElementById('table-changes').innerHTML = html + '</tbody></table>';
+}
+
+function toggleRow(rid, did) {
+  const r = document.getElementById(rid);
+  const d = document.getElementById(did);
+  const open = d.classList.contains('open');
+  d.classList.toggle('open', !open);
+  r.classList.toggle('expanded', !open);
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+const all = PAPERS.filter(p => ['core','supporting','peripheral'].includes(p.r));
+buildTable(all, 'table-all', true);
+buildTable(PAPERS.filter(p => p.r==='core'), 'table-core', false);
+buildTable(PAPERS.filter(p => p.r==='supporting'), 'table-supporting', false);
+buildTable(PAPERS.filter(p => p.r==='peripheral'), 'table-peripheral', false);
+buildChangesTable();
+</script>
+</body>
+</html>

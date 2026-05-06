@@ -1,0 +1,12 @@
+name: longvideobench
+dataset_root: /mnt/c/longvideobench_data/LongVideoBench
+# LongVideoBench ships its test split without ground truth (lvb_test_wo_gt.json),
+# so scoring is only possible on val. Other papers also evaluate on val for this
+# reason — stick with split=val for all reported results.
+split: val   # val | test
+video_dir: ${dataset.dataset_root}/videos
+subtitle_dir: ${dataset.dataset_root}/subtitles
+annotation_path: null  # optional override; otherwise derived from split
+
+metrics:
+  type: longvideobench_mcq

@@ -1,0 +1,27 @@
+task: qa  # use with temporal_abstraction=iterative_qa and evaluation=vlm_qa
+# zsh: quote list CLI overrides, e.g. temporal_abstraction.iterative.frames_per_round='[6,6,6,6]'
+
+iterative:
+  n_queries: 3                     # number of VLM search rounds before final answer
+  frames_per_round: [6, 6, 6, 6]  # [initial, query1, query2, ..., queryN]; single int = uniform; CLI: quote for zsh
+  min_time_gap: 1.0                # minimum seconds between any two selected frames
+
+frame_selection:
+  # Method for initial frame selection (query rounds always use cosine-sim top-k)
+  method: constrained
+  frames_per_chunk: 1     # not used by iterative; kept for TAL compatibility
+  n_frames: null
+  constrained:
+    k: 2.0
+
+metadata:
+  include_metadata: true
+  timestamps: true          # show per-frame locations in iterative prompts too
+  subtitles: false
+  cosine_similarity: false
+
+prompt:
+  max_chunks_per_prompt: 24  # not used by iterative; kept for TAL compatibility
+  style: auto                # shared final-answer format: auto | short_answer | videomme_mcq
+  # Iterative final answers reuse the same frame-based QA prompt skeleton as non-iterative QA.
+  custom_template: null

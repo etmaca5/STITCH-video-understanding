@@ -1,0 +1,20 @@
+mode: vlm_qa
+
+chunk_source: stable_chunks   # default for QA; use uniform only for fast/debug runs
+num_uniform_chunks: 24        # only used when chunk_source=uniform; match temporal_abstraction.prompt.max_chunks_per_prompt when frames_per_chunk=1
+                              # chunks shown to the VLM are capped by K = min(num_uniform_chunks, temporal_abstraction.prompt.max_chunks_per_prompt, floor(max_images_per_request / frames_per_chunk))
+chunk_preselection: query_similarity   # stable_chunks only; uniform now fails fast
+                                       # query_similarity = top K stable chunks by query similarity; none = first K stable chunks
+vlm_concurrency: 1   # max concurrent VLM API calls; 1 = sequential (default)
+
+# Override the device used by the chunking embedding backend (text-encoder
+# inference at runtime). null = use the main device (typically cuda).
+# Set to "cpu" to keep the GPU free for another process (e.g. a parallel
+# cache-warming run); video window embeddings still come from the disk cache.
+embedding_device: null
+
+# When true, a window-embedding cache miss raises and the video is skipped
+# (logged in failed_videos with skipped_reason=window_cache_miss) instead of
+# falling back to live inference. Useful with embedding_device=cpu to avoid
+# accidentally running a slow CPU video-encode on a cache miss.
+require_window_cache: false

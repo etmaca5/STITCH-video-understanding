@@ -1,0 +1,8 @@
+name: videomme
+video_dir: /mnt/c/videomme_data/Video-MME/data
+subtitle_dir: /mnt/c/videomme_data/Video-MME/subtitle
+annotation_path: /mnt/c/videomme_data/Video-MME/videomme/test-00000-of-00001.parquet
+duration_split: all   # all | short | medium | long
+
+metrics:
+  type: videomme_mcq

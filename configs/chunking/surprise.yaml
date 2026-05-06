@@ -1,0 +1,13 @@
+type: surprise
+embedding_backend: internvideo2
+window_frames: 16
+stride_seconds: 1.0
+sample_fps: 15
+k: 2.0
+model_path: models/VJEPA2/vjepa2-vitl-fpc64-256
+embedding_model_dir: models/VideoMAEv2-Base
+embedding_sample_interval: 1.0
+refine_boundaries: true
+threshold_method: std  # "std" or "pelt"
+penalty: null          # for pelt: null = BIC (var*2*log(n)), or float for manual override
+min_segment_windows: 2 # minimum windows between change points (pelt)

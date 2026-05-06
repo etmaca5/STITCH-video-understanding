@@ -1,0 +1,11 @@
+# TODO: threshold should be adaptive (k * std above mean) like embedding
+# and surprise chunking, not a fixed absolute value. This requires
+# refactoring content_detector in chunking.py to compute content_val
+# scores first, derive threshold = mean + k * std, then find boundaries.
+# Or even better in the future we should use like prompt to summaries paper an adaptive threshold.
+type: content_detector
+embedding_backend: internvideo2
+threshold: 27.0
+min_scene_len: 15
+embedding_model_dir: models/VideoMAEv2-Base
+embedding_sample_interval: 1.0

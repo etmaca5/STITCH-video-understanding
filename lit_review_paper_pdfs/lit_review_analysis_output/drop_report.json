@@ -1,0 +1,58 @@
+[
+  {
+    "filename": "2104.08860v2.pdf",
+    "title": "CLIP4Clip: An Empirical Study of CLIP for End to End Video Clip Retrieval",
+    "authors": "Luo et al.",
+    "venue": "Neurocomputing 2022",
+    "drop_reason": "Video-text clip-level retrieval (text→video retrieval), not temporal grounding, GEBD, or VLM frame selection. Tasks have no overlap with STITCH evaluation benchmarks.",
+    "confidence": "high"
+  },
+  {
+    "filename": "Mastering Diverse Domains through World Models.pdf",
+    "title": "Mastering Diverse Domains through World Models (DreamerV3)",
+    "authors": "Hafner et al.",
+    "venue": "Nature 2025",
+    "drop_reason": "Reinforcement learning world model paper. Completely unrelated to video understanding, temporal segmentation, or moment retrieval.",
+    "confidence": "high"
+  },
+  {
+    "filename": "Video Summarization Techniques A Comprehensive Review.pdf",
+    "title": "Video Summarization Techniques: A Comprehensive Review",
+    "authors": "Unknown",
+    "venue": "Survey",
+    "drop_reason": "Overly broad survey on video summarization. Too general for STITCH framing; no specific method or benchmark overlap. Better covered by citing specific methods.",
+    "confidence": "high"
+  },
+  {
+    "filename": "Video-ColBERT Visual Collaborative BERT for Video Question Answering.pdf",
+    "title": "Video-ColBERT: Visual Collaborative BERT for Video Question Answering",
+    "authors": "Unknown",
+    "venue": "2023",
+    "drop_reason": "Video QA with collaborative BERT; no temporal segmentation, GEBD, or moment retrieval overlap with STITCH tasks.",
+    "confidence": "high"
+  },
+  {
+    "filename": "X-CLIP End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval.pdf",
+    "title": "X-CLIP: End-to-End Multi-grained Contrastive Learning for Video-Text Retrieval",
+    "authors": "Ma et al.",
+    "venue": "ACM MM 2022",
+    "drop_reason": "Video-text retrieval model. No temporal grounding or GEBD tasks. No benchmark overlap with STITCH.",
+    "confidence": "high"
+  },
+  {
+    "filename": "Penguin-VL Efficient Vision-Language Model for Extreme Compression.pdf",
+    "title": "Penguin-VL: Efficient Vision-Language Model for Extreme Compression",
+    "authors": "Unknown",
+    "venue": "2024",
+    "drop_reason": "VLM compression/efficiency work focused on architecture compression, not temporal segmentation or video understanding tasks relevant to STITCH.",
+    "confidence": "medium"
+  },
+  {
+    "filename": "Video Re-localization.pdf",
+    "title": "Video Re-localization",
+    "authors": "Unknown",
+    "venue": "ECCV 2018",
+    "drop_reason": "Old video re-localization paper. Tasks and methods too outdated and peripheral; no direct connection to STITCH's benchmarks or approach.",
+    "confidence": "medium"
+  }
+]

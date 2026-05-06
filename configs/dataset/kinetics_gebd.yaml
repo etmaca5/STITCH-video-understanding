@@ -1,0 +1,9 @@
+name: kinetics_gebd
+video_dir: /mnt/c/kinetics_gebd_data/clips
+annotation_path: /mnt/c/kinetics_gebd_data/gebd_repo/data/export/k400_mr345_val_min_change_duration0.3.pkl
+split: val
+min_f1_consistency: 0.3
+
+metrics:
+  type: gebd_f1
+  thresholds: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]

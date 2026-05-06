@@ -1,0 +1,6 @@
+mode: vlm_chunk_selection
+
+chunk_source: uniform        # uniform | stable_chunks
+num_uniform_chunks: 4        # only used when chunk_source=uniform
+chunk_preselection: none     # stable_chunks only; query_similarity with uniform fails fast
+vlm_concurrency: 1   # max concurrent VLM API calls; 1 = sequential (default)

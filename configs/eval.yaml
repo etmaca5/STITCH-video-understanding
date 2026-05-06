@@ -1,0 +1,55 @@
+defaults:
+  - dataset: qvhighlights
+  - chunking: embedding
+  - retrieval: internvideo2
+  - optional vlm: qwen3_vl_8b
+  - temporal_abstraction: chunk_selection
+  - evaluation: embedding
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  job:
+    chdir: false
+
+postprocessing:
+  detect_transitions: false
+  transition:
+    smooth_window: 3
+    min_transition_sec: 1.0
+  merge:
+    min_chunk_sec: 3.0
+    max_chunk_sec: 60.0
+  gebd_boundary_refinement:
+    enabled: false
+  query_merge:
+    enabled: true        # VLM modes require stable_chunks when this is enabled
+    similarity_threshold: 0.05
+    max_chunk_sec: 120.0
+  moment_selection:
+    enabled: false       # embedding only; VLM modes reject this
+    # "penalized_dp", "top_gap", or "score_drop"
+    method: penalized_dp
+    # penalized_dp params:
+    penalty: null
+    penalty_factor: 1.0
+    max_moment_sec: null
+    # top_gap params:
+    gap: 0.05
+
+output:
+  dir: clean_results
+  notes: ""
+  generate_videos: false
+  generate_plots: false
+  # If set, single-example QA plots (qa_example, qa_high_quality_*) use this sample_id
+  # so different runs can be aligned on the same video/question.
+  qa_high_quality_sample_id: null
+
+subset_ids: null
+sample_size: null
+sample_seed: 0
+redo_failed_from: null
+resume_from: null

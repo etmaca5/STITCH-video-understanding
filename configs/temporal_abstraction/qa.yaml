@@ -1,0 +1,83 @@
+task: qa  # use with temporal_abstraction=qa and evaluation=vlm_qa
+
+frame_selection:
+  # Useful: constrained (aka min dist), mmr, focused (aka half half / split budget),
+  #         segment_adaptive (segment-first budget allocation)
+  # Reference / exploratory: focused, stretch
+  # Deprecated: weighted, nudge
+  # middle | multi | best_window (greedy) | weighted | mmr | temporal | coverage | rdmv | constrained | focused | segment_adaptive | nudge | stretch | uniform_topk | random
+  # mmr_chunk_penalty | mmr_chunk_constrained | intra_chunk_greedy
+  method: best_window
+  best_window_strategy: ranked_round_robin  # ranked_round_robin | temporal_neighbors (best_window only)
+  frames_per_chunk: 1       # only used by middle/multi/best_window
+  n_frames: null            # total frames for window methods; null = auto from max_chunks_per_prompt
+
+  # Per-method hyperparameters (only read when that method is active)
+  weighted: {}              # deprecated
+  mmr:
+    relevance_weight: 0.7   # lambda: 0=pure diversity, 1=pure relevance
+    temporal_weight: 0.0    # beta: blend temporal proximity into penalty (0=off)
+  temporal:
+    spacing_factor: 2.0     # min_spacing = duration / (spacing_factor * n_frames)
+    duration_scale: false   # scale penalty exponent with video duration
+  coverage:
+    relevance_weight: 0.5   # lambda: weight of relevance vs coverage
+  rdmv:
+    lambda_min: 0.05
+    lambda_max: 0.6
+    alpha: 2.0              # CV sensitivity for VB-Scale
+    gate_threshold: 0.4     # fall back to diversity-only below this max relevance
+  constrained:
+    k: 2.0                  # min_dist = duration / n_frames / k; k=1 ≈ uniform, higher = more flexible
+  focused:
+    context_mode: uniform   # uniform | representative
+    merge_threshold: 0.85   # similarity threshold for representative segment merging
+  segment_adaptive:
+    smoothing_window: 5     # moving-average width for the relevance timeline
+    boundary_threshold: 0.75  # std-dev multiplier above mean absolute change
+    min_segment_size: null  # in windows; null = adapt to video length and frame budget
+    max_segments: null      # optional hard cap on detected segments
+    coverage_floor: true    # guarantee one frame per retained segment when possible
+    duration_weight: 0.25
+    mean_relevance_weight: 0.35
+    peak_relevance_weight: 0.40
+    intra_segment_method: mmr  # mmr | topk
+    mmr_relevance_weight: 0.7  # local MMR lambda within each segment
+  nudge:
+    radius_factor: 0.5      # deprecated
+  stretch:
+    relevance_bias: 0.5     # 0 = uniform spacing, 1 = fully relevance-shaped density
+  uniform_topk: {}          # half uniform + half top-relevance; no extra params
+  random:
+    seed: 42                # deterministic random-window baseline
+  mmr_chunk_penalty:          # USE WITH query_merge.enabled=true
+    relevance_weight: 0.7
+    temporal_weight: 0.0
+    chunk_weight: 0.3         # gamma: penalty for picking from an already-used chunk
+  mmr_chunk_constrained:      # USE WITH query_merge.enabled=false
+    relevance_weight: 0.7
+    temporal_weight: 0.0
+  intra_chunk_greedy: {}      # USE WITH query_merge.enabled=true; no tunables
+                              # allocate n_frames by peak relevance across chunks, then top-k per chunk
+
+metadata:
+  include_metadata: true   # master toggle; individual keys below override when set
+  # timestamps: true
+  subtitles: false
+  # video_duration: true
+  cosine_similarity: false
+
+prompt:
+  # vlm_qa: ignored for window methods on stable_chunks; applies to uniform and other non-window prompts.
+  max_chunks_per_prompt: 24  # with frames_per_chunk: 1 → 24 images (fits default VLM max_images_per_request=30)
+  # New reported VLM-QA runs use official_dataset_mcq, which renders the
+  # WFS-SB/lmms-eval-style task prompt only (no frame metadata preamble).
+  # official_dataset_mcq:
+  #   mlvu -> WFS-SB/lmms-eval dev MCQ prompt
+  #   longvideobench -> WFS-SB/lmms-eval validation MCQ prompt
+  #   videomme -> WFS-SB/lmms-eval VideoMME MCQ prompt
+  # legacy_repo_mcq: older repo MCQ wording with frame metadata preamble.
+  style: official_dataset_mcq  # official_dataset_mcq | videomme_mcq | legacy_repo_mcq | auto | short_answer | mlvu_lmms_eval_mcq | longvideobench_official_mcq
+  subtitle_only: false      # when true, ignore frames and answer from the full subtitle transcript only
+  # custom_template can still opt into prompt metadata if needed.
+  custom_template: null     # optional Python format template for QA prompts

@@ -1,0 +1,9 @@
+# OUT OF CONSIDERATION: this evaluation mode is currently dropped from the
+# representation-technique sweep. `lovr_retrieval` embeds full videos by
+# sampling only `num_frames` frames uniformly across the entire (~26 min)
+# video and does not wire through `chunk_score_method` / `chunk_aggregation`,
+# so GEM / CoH / LSE / max_sim cannot be compared here. Revisit once the
+# chunking + aggregation pipeline is integrated into `_evaluate_lovr_retrieval`.
+mode: lovr_retrieval
+
+batch_size: 8

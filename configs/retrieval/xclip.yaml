@@ -1,0 +1,5 @@
+# Deprecated: Microsoft's X-CLIP is a video classification model, not a
+# retrieval model. It underperforms InternVideo2 on retrieval benchmarks.
+# Prefer retrieval=internvideo2 (now the default).
+backend: xclip
+model_path: models/xclip-base-patch16-kinetics-600

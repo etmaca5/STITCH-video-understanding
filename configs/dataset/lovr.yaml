@@ -1,0 +1,17 @@
+# OUT OF CONSIDERATION: LoVR is currently dropped from the evaluation sweep.
+# The `lovr_retrieval` mode encodes full videos by sampling only `num_frames`
+# frames uniformly across the entire (~26 minute) video, which is a degenerate
+# baseline and does not go through the chunking + aggregation pipeline used by
+# the moment-retrieval datasets. Until that integration is done, LoVR results
+# are not comparable to the ActivityNet / QVHighlights representation sweeps.
+name: lovr
+dataset_root: /mnt/c/lovr_data
+split: test   # train | test
+full_video_dir: ${dataset.dataset_root}/video_data/full_videos
+clip_video_dir: ${dataset.dataset_root}/video_data/long_video_clip
+video_annotation_path: null  # optional override; otherwise derived from split
+clip_annotation_path: null   # optional override; otherwise derived from split
+
+metrics:
+  type: lovr_pass_at_k
+  topk: [1, 5, 10]

@@ -1,0 +1,12 @@
+mode: embedding
+
+# recompute | mean | max_sim | gem | coherence_mean | lse
+chunk_score_method: max_sim
+batch_size: 8
+
+# Parameters for the single-vector chunk aggregation methods
+# (used when chunk_score_method in {mean, gem, coherence_mean, lse}).
+chunk_aggregation:
+  gem_p: 3.0
+  coherence_tau: 10.0
+  lse_tau: 10.0

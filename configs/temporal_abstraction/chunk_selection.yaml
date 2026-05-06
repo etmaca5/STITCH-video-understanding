@@ -1,0 +1,18 @@
+task: chunk_selection  # use with temporal_abstraction=chunk_selection and evaluation=vlm_chunk_selection
+
+frame_selection:
+  method: middle       # middle | multi | best_window
+  best_window_strategy: ranked_round_robin  # ranked_round_robin | temporal_neighbors
+  frames_per_chunk: 1
+
+metadata:
+  include_metadata: true   # master toggle; individual keys below override when set
+  # timestamps: true
+  # subtitles: true
+  # video_duration: true
+  # cosine_similarity: true
+  # chunk_index: true
+
+prompt:
+  max_chunks_per_prompt: 10  # actual chunks shown may be lower: capped by max_images_per_request // frames_per_chunk
+  response_format: chunk_number_only

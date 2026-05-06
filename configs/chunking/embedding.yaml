@@ -1,0 +1,9 @@
+type: embedding
+embedding_backend: internvideo2
+sample_interval: 2.0
+k: 2.0
+model_dir: models/VideoMAEv2-Base
+refine_boundaries: false
+threshold_method: kernel_cpd  # "std", "pelt", or "kernel_cpd"
+penalty: null          # for pelt/kernel_cpd: null = BIC (var*2*log(n)), or float for manual override
+min_segment_windows: 2 # minimum windows between change points (pelt/kernel_cpd)

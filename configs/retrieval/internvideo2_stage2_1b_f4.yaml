@@ -1,0 +1,5 @@
+backend: internvideo2
+model_dir: models/InternVideo2-Stage2_1B-224p-f4
+num_frames: 4
+image_size: 224
+use_flash_attn: false
