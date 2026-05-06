@@ -1,6 +1,6 @@
 name: kinetics_gebd
-video_dir: /mnt/c/kinetics_gebd_data/clips
-annotation_path: /mnt/c/kinetics_gebd_data/gebd_repo/data/export/k400_mr345_val_min_change_duration0.3.pkl
+video_dir: data/kinetics_gebd/clips
+annotation_path: data/kinetics_gebd/k400_mr345_val_min_change_duration0.3.pkl
 split: val
 min_f1_consistency: 0.3
 

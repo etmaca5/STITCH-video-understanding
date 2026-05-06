@@ -1,11 +1,7 @@
 provider: hf_endpoint
 # LLaVA-OV video-path config. This sends selected frames as a single
 # vLLM `video_url` frame sequence instead of separate image_url entries.
-base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
-# perona lab
-# base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
-# personal
-# base_url: "https://dhc3y1i1o4y337tj.us-east-1.aws.endpoints.huggingface.cloud/v1"
+base_url: "https://your-huggingface-endpoint.example.com/v1"
 api_key_env: HF_TOKEN
 model: "llava-hf/llava-onevision-qwen2-7b-ov-hf"
 site_url: null

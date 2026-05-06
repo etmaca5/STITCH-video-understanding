@@ -1,5 +1,5 @@
 name: lvbench
-dataset_root: /mnt/c/lvbench_data/LVBench
+dataset_root: data/LVBench
 annotation_path: ${dataset.dataset_root}/data/video_info.meta.jsonl
 video_dir: ${dataset.dataset_root}/scripts/videos/00000
 

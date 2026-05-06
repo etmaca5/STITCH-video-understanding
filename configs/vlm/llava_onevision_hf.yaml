@@ -1,7 +1,6 @@
 provider: hf_endpoint
 # Fill in after deploying the endpoint on HuggingFace (must end in /v1).
-base_url: "https://jmwf3u4w487e8fx5.us-east-1.aws.endpoints.huggingface.cloud/v1"
-# personal: "https://dhc3y1i1o4y337tj.us-east-1.aws.endpoints.huggingface.cloud/v1"
+base_url: "https://your-huggingface-endpoint.example.com/v1"
 api_key_env: HF_TOKEN
 # vLLM requires the deployed model ID (TGI would accept any placeholder).
 model: "llava-hf/llava-onevision-qwen2-7b-ov-hf"

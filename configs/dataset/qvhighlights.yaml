@@ -1,5 +1,5 @@
 name: qvhighlights
-data_root: /mnt/c/qvhighlights_data
+data_root: data/qvhighlights
 split: val
 
 # Standard QVHighlights Moment Retrieval evaluation protocol:

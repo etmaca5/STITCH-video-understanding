@@ -2,7 +2,7 @@ provider: openrouter
 base_url: "https://openrouter.ai/api/v1"
 model: "qwen/qwen3-vl-8b-instruct"
 site_url: null
-site_name: "Video Retrieval"
+site_name: "STITCH"
 # OpenRouter route for this model may use a provider with a hard cap (e.g. Parasail: 30 images/request).
 max_images_per_request: 30
 # NOTE: temperature=0 does NOT guarantee deterministic outputs for Qwen models

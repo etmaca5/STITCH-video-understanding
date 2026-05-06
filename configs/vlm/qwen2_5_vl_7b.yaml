@@ -2,7 +2,7 @@ provider: openrouter
 base_url: "https://openrouter.ai/api/v1"
 model: "qwen/qwen-2.5-vl-7b-instruct"
 site_url: null
-site_name: "Video Retrieval"
+site_name: "STITCH"
 max_images_per_request: 4
 # NOTE: temperature=0 does NOT guarantee deterministic outputs for Qwen models
 # served via vLLM/OpenRouter. See qwen3_vl_8b.yaml for details.

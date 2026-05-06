@@ -1,6 +1,6 @@
 name: ego4d_mq
-annotations_dir: /mnt/c/ego4d_data/v2/annotations
-clips_dir: /mnt/c/ego4d_data/v2/clips
+annotations_dir: data/ego4d/v2/annotations
+clips_dir: data/ego4d/v2/clips
 split: val
 
 # Ego4D MQ evaluation protocol:

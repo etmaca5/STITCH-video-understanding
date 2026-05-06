@@ -5,7 +5,7 @@
 # the moment-retrieval datasets. Until that integration is done, LoVR results
 # are not comparable to the ActivityNet / QVHighlights representation sweeps.
 name: lovr
-dataset_root: /mnt/c/lovr_data
+dataset_root: data/lovr
 split: test   # train | test
 full_video_dir: ${dataset.dataset_root}/video_data/full_videos
 clip_video_dir: ${dataset.dataset_root}/video_data/long_video_clip

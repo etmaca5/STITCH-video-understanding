@@ -1,6 +1,6 @@
 name: ego4d_nlq
-annotations_dir: /mnt/c/ego4d_data/v2/annotations
-clips_dir: /mnt/c/ego4d_data/v2/clips
+annotations_dir: data/ego4d/v2/annotations
+clips_dir: data/ego4d/v2/clips
 split: val
 
 # Standard Ego4D NLQ evaluation protocol:

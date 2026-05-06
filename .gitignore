@@ -1,31 +1,46 @@
-*.pyc
-*.DS_Store
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Environments and local config
+.env
+.venv/
+venv/
+
+# OS/editor files
+.DS_Store
+.cursor/
+.claude/
 *.mdc
-*.csv
-*.json
-customhighlightsdata/*
-!customhighlightsdata/custom_dataset.json
-activitynetdata/*
-!activitynetdata/README.md
-model/*
+
+# Data, checkpoints, caches, and generated outputs
+data/
+activitynetdata/
+customhighlightsdata/
+third_party/
 models/*
-notes.md
-*.mdc
-CLAUDE.md
-analysis/concatenated*
-*.mp4
-*.pt
-evaluate.log
+!models/InternVideo2-Stage2_1B-224p-f4/
 !models/InternVideo2-Stage2_1B-224p-f4/modeling_internvideo2.py
 !models/InternVideo2-Stage2_1B-224p-f4/config_bert_large.json
-.env
+outputs/
+results/
+clean_results/
+analysis/
+*.mp4
+*.mov
+*.pt
+*.pth
+*.safetensors
 *.npz
+*.npy
+*.parquet
+*.pkl
 *.log
-outputs/*
 
-# results: allow metrics.json (override *.json)
-!results/*/metrics.json
-!clean_results/*/*/*/metrics.json
-
-lit_review_paper_pdfs/*.pdf
-!lit_review_paper_pdfs/lit_review_analysis_output/*.json
+# Local notes and scratch artifacts
+notes.md
+paper_runs.md
+ablations_and_analysis.md

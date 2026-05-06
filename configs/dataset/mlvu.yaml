@@ -4,13 +4,13 @@ name: mlvu
 split: dev                                   # dev | test
 
 # Dev split (MCQ only — 7 tasks, 2,174 questions). Used when split=dev.
-dataset_root: /mnt/c/mlvu_data/MVLU/MLVU
+dataset_root: data/MLVU
 json_dir: ${dataset.dataset_root}/json
 video_dir: ${dataset.dataset_root}/video
 
 # Test split (MCQ — 502 questions scored locally against test_mcq_gt.json).
 # Used when split=test.  Generation tasks (SSC/VS) are still out of scope.
-test_dataset_root: /mnt/c/mlvu_data/MLVU_Test
+test_dataset_root: data/MLVU_Test
 test_annotation_path: ${dataset.test_dataset_root}/test-ground-truth/test_mcq_gt.json
 test_video_dir: ${dataset.test_dataset_root}/MLVU_Test/video
 
