@@ -43,8 +43,9 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Download the InternVideo2 Stage2 1B 224p-f4 checkpoint separately and place it
-under:
+Download the InternVideo2 Stage2 1B 224p-f4 checkpoint (`.pt` file) from the
+[OpenGVLab Hugging Face repository](https://huggingface.co/OpenGVLab/InternVideo2-Stage2_1B-224p-f4)
+and place it under:
 
 ```text
 models/InternVideo2-Stage2_1B-224p-f4/
@@ -52,6 +53,9 @@ models/InternVideo2-Stage2_1B-224p-f4/
 
 This repository includes the small model-definition/config files needed by the
 loader, but not the checkpoint weights.
+
+For VLM-based evaluation modes, copy `.env.example` to `.env` and fill in API
+keys for your chosen provider (see `configs/vlm/` for available options).
 
 ## Quick Start
 

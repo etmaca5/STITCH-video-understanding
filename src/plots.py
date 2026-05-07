@@ -23,16 +23,20 @@ import numpy as np
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from matplotlib.figure import Figure
 
-for _calibri in (
-    "/mnt/c/Windows/Fonts/calibri.ttf",
-    "/mnt/c/Windows/Fonts/calibrib.ttf",
-    "/mnt/c/Windows/Fonts/calibrii.ttf",
-):
-    if os.path.isfile(_calibri):
-        try:
-            _fm.fontManager.addfont(_calibri)
-        except Exception:
-            pass
+_EXTRA_FONT_DIRS = [
+    "/mnt/c/Windows/Fonts",
+    os.path.expanduser("~/.local/share/fonts"),
+    "/usr/share/fonts",
+]
+for _font_dir in _EXTRA_FONT_DIRS:
+    if os.path.isdir(_font_dir):
+        for _font in ("calibri.ttf", "calibrib.ttf", "calibrii.ttf"):
+            _path = os.path.join(_font_dir, _font)
+            if os.path.isfile(_path):
+                try:
+                    _fm.fontManager.addfont(_path)
+                except Exception:
+                    pass
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from results import load_run
