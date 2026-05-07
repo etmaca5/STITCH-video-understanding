@@ -1,0 +1,7 @@
+name: tapos_gebd
+video_dir: data/tapos/clips/val
+annotation_path: data/tapos/annotations/tapos_val_gebd.json
+
+metrics:
+  type: gebd_f1
+  thresholds: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50]

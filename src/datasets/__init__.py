@@ -11,6 +11,7 @@ from .lvbench import LVBenchDataset
 from .videomme import VideoMMEDataset
 from .mlvu import MLVUDataset
 from .kinetics_gebd import KineticsGEBDDataset
+from .tapos_gebd import TaposGEBDDataset
 
 DATASETS = {
     "qvhighlights": QVHighlightsDataset,
@@ -25,6 +26,7 @@ DATASETS = {
     "videomme": VideoMMEDataset,
     "mlvu": MLVUDataset,
     "kinetics_gebd": KineticsGEBDDataset,
+    "tapos_gebd": TaposGEBDDataset,
 }
 
 

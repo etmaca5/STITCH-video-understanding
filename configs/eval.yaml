@@ -25,7 +25,7 @@ postprocessing:
   gebd_boundary_refinement:
     enabled: false
   query_merge:
-    enabled: true        # VLM modes require stable_chunks when this is enabled
+    enabled: false
     similarity_threshold: 0.05
     max_chunk_sec: 120.0
   moment_selection:

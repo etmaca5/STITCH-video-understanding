@@ -150,7 +150,6 @@ class Chunking:
     """
     Different types of chunking (core of this system):
     1. Frame difference / content detector chunking from pyscenedetect
-    https://arxiv.org/pdf/2506.10807
     2. Embedding based chunking (VideoMAEv2 or InternVideo2)
     - compare sampled embeddings and if they are different enough we set a boundary
 

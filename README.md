@@ -24,6 +24,7 @@ models/InternVideo2-...   lightweight InternVideo2 model-definition files only
 src/                     STITCH implementation and evaluation code
 DATASETS.md              dataset preparation notes and expected config fields
 EVALUATION.md            commands for reproducing the main evaluation modes
+PAPER_RUNS.md            exact Hydra overrides for every paper table and figure
 requirements.txt         minimal Python dependencies
 ```
 
@@ -43,9 +44,8 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Download the InternVideo2 Stage2 1B 224p-f4 checkpoint (`.pt` file) from the
-[OpenGVLab Hugging Face repository](https://huggingface.co/OpenGVLab/InternVideo2-Stage2_1B-224p-f4)
-and place it under:
+Download the InternVideo2 Stage2 1B 224p-f4 checkpoint (`.pt` file) from its
+official release and place it under:
 
 ```text
 models/InternVideo2-Stage2_1B-224p-f4/
@@ -111,7 +111,8 @@ Outputs are written to `clean_results/` by default and are ignored by git.
 - `temporal_abstraction=qa`: VLM QA prompt/frame-selection settings.
 - `retrieval=internvideo2`: default frozen video-text encoder.
 
-See [EVALUATION.md](EVALUATION.md) for paper-oriented commands and
+See [PAPER_RUNS.md](PAPER_RUNS.md) for the exact configurations behind every
+paper table and figure, [EVALUATION.md](EVALUATION.md) for general usage, and
 [DATASETS.md](DATASETS.md) for dataset preparation.
 
 ## Artifact Scope
@@ -130,12 +131,5 @@ needed to run STITCH once datasets and checkpoints are supplied locally.
 
 ## Citation
 
-If you use this code, please cite the paper:
-
-```bibtex
-@article{casanova2026stitch,
-  title={Training-Free Temporal Abstraction for General Video Understanding},
-  author={Casanova, Etienne and Brodjian, Sevan and Perona, Pietro},
-  year={2026}
-}
-```
+If you use this code, please cite the paper (full citation will be added after
+the review period).

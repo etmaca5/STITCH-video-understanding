@@ -75,6 +75,27 @@ python src/evaluate.py \
 
 Metrics: GEBD F1 over the configured relative-distance thresholds.
 
+### TAPOS
+
+Config: `configs/dataset/tapos_gebd.yaml`
+
+Expected inputs:
+
+- processed TAPOS video clips
+- TAPOS boundary annotation JSON, e.g. `tapos_val_gebd.json`
+
+Run:
+
+```bash
+python src/evaluate.py \
+  dataset=tapos_gebd \
+  evaluation=gebd \
+  dataset.video_dir=/path/to/tapos/clips/val \
+  dataset.annotation_path=/path/to/tapos_val_gebd.json
+```
+
+Metrics: GEBD F1 over the configured relative-distance thresholds.
+
 ## Long-Video QA
 
 These datasets use multiple-choice answer metrics and the `evaluation=vlm_qa`
