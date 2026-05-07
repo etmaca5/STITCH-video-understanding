@@ -44,3 +44,4 @@ analysis/
 notes.md
 paper_runs.md
 ablations_and_analysis.md
+cache/*
